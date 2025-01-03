@@ -5,6 +5,8 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form'
 import { useNavigation } from '@react-navigation/native';
+import axios from 'axios';
+
 
 const iconImage = require('@/assets/images/icon.png');
 
@@ -26,7 +28,15 @@ const RegisterScreen = () => {
 
   const navaigation = useNavigation<any>();
 
-  const onSubmit: SubmitHandler<Register> = (data) => console.log(data);
+  const onSubmit: SubmitHandler<Register> = (user) => {
+    console.log(user);
+    axios.post('http://192.168.2.55:5000/api/v1/users/register',user)
+    .then((response)=> {
+        console.log(response);
+    }).catch((err)=>{
+        console.log("somthing went wrong",err);
+    })
+  }
   // const onSubmit = (data:Register) => console.log(data)
 
 

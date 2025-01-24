@@ -1,6 +1,11 @@
-import useFetch from '../hooks/useFetch'
+import api from './api';
 
-export const register = (payload) => {
-    console.log(payload);
-    return useFetch('/users','post',payload);
+export const register = async(payload) => {
+    const response = await api.post('/users/register', payload);
+    return response.data
+}
+
+export const login = async(payload) => {
+    const response = await api.post('/users/login', payload);
+    return response.data
 }

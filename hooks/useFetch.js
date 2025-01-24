@@ -1,8 +1,7 @@
-// hooks/useFetch.js
 import { useState, useEffect } from 'react';
 import api from '../api/api';
 
-const useFetch = (url,method = 'get', body = null) => {
+const useFetch = (url, method = 'get', body = null) => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -20,7 +19,7 @@ const useFetch = (url,method = 'get', body = null) => {
     };
 
     fetchData();
-  }, [url]);
+  }, [url, method, body]);
 
   return { data, loading, error };
 };

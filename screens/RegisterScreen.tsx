@@ -5,7 +5,7 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form'
 import { useNavigation } from '@react-navigation/native';
-import axios from 'axios';
+import { register } from '../api/userAPI'
 
 
 const iconImage = require('@/assets/images/icon.png');
@@ -22,22 +22,17 @@ const RegisterScreen = () => {
   const {
     control,
     handleSubmit,
-    formState: { errors, isValid }
+    formState: { errors }
   } = useForm<Register>({
   })
 
   const navaigation = useNavigation<any>();
 
-  const onSubmit: SubmitHandler<Register> = (user) => {
-    console.log(user);
-    axios.post('http://192.168.2.55:5000/api/v1/users/register',user)
-    .then((response)=> {
-        console.log(response);
-    }).catch((err)=>{
-        console.log("somthing went wrong",err);
-    })
-  }
-  // const onSubmit = (data:Register) => console.log(data)
+  const onSubmit: SubmitHandler<Register> = async (user) => {
+    console.log('Submitted User:', user);
+    const data = await register(user);
+    console.log('Loading:', data.data);
+  };
 
 
   return (
@@ -143,7 +138,7 @@ const RegisterScreen = () => {
         </View>
         
         <Pressable onPress={() => navaigation.navigate("Login")} style={{ marginTop: 15 }}>
-          <Text style={{ fontSize: 17, textAlign: 'center', color: 'gray' }}>Already have an acount? Sign In</Text>
+          <Text style={{ fontSize: 17, textAlign: 'center', color: 'gray', cursor: 'pointer' }}>Already have an acount? Sign In</Text>
         </Pressable>
       </KeyboardAvoidingView>
     </SafeAreaView>

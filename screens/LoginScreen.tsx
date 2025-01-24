@@ -4,8 +4,6 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form'
 import { useNavigation } from '@react-navigation/native';
-import axios from 'axios';
-import { register } from '../api/userAPI'
 
 const iconImage = require('@/assets/images/icon.png');
 
@@ -28,8 +26,6 @@ const LoginScreen = () => {
 
     const onSubmit: SubmitHandler<Login> = (user) => {
         console.log(user);
-        // const { data, loading, error } = await register(user)
-        // console.log(data,loading, error);
     }
 
 

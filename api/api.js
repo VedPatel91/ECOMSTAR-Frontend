@@ -1,26 +1,37 @@
-// api/api.js
 import axios from 'axios';
+import { BASE_URL } from '../utils/contsant';
 
-// Base URL for API requests
-const API_URL = 'http://localhost:5000/api/v1'; 
-
-// Create an instance of Axios with default settings
 const api = axios.create({
-  baseURL: API_URL,
+  baseURL: BASE_URL,
+  timeout: 10000, // 10 seconds timeout
   headers: {
     'Content-Type': 'application/json',
-    // Add more common headers if needed (e.g., authentication token)
-    // 'Authorization': `Bearer ${your_token}`,
   },
 });
 
-// Optional: Interceptors for request and response handling
-// api.interceptors.response.use(
-//   (response) => response,  // Handle response here (e.g., logging)
-//   (error) => {
-//     // Handle errors here (e.g., global error logging, notification)
-//     return Promise.reject(error);
-//   }
-// );
+// Add a request interceptor
+api.interceptors.request.use(
+  (config) => {
+    // Add authorization headers, if needed
+    // const token = AsyncStorage.getItem('token'); 
+    // if (token) config.headers.Authorization = `Bearer ${token}`;
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+// Add a response interceptor
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    // Handle global error responses
+    if (error.response?.status === 401) {
+      // Handle unauthorized errors (e.g., logout user)
+    }
+    return Promise.reject(error.response?.data || error.message);
+  }
+);
 
 export default api;

@@ -1,9 +1,11 @@
 import { StyleSheet, SafeAreaView, View, Image, KeyboardAvoidingView, Text, TextInput, Button, Pressable } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form'
 import { useNavigation } from '@react-navigation/native';
+import { login } from '@/api/userAPI';
+import Loader from '@/components/Loader';
 
 const iconImage = require('@/assets/images/icon.png');
 
@@ -18,19 +20,27 @@ const LoginScreen = () => {
     const {
         control,
         handleSubmit,
+        reset,
         formState: { errors }
     } = useForm<Login>({
     })
+    const [isLoading,setIsLoading] = useState(false);
 
     const navaigation = useNavigation<any>();
 
-    const onSubmit: SubmitHandler<Login> = (user) => {
-        console.log(user);
+    const onSubmit: SubmitHandler<Login> = async (user) => {
+        setIsLoading(true);
+        const data = await login(user);
+        if (data && data.success) {
+            reset();
+            setIsLoading(false);
+        }
     }
 
 
     return (
         <SafeAreaView style={styles.loginContainer} >
+            { isLoading && <Loader /> }
             <View>
                 <Image style={styles.imageContainer} source={iconImage} />
             </View>

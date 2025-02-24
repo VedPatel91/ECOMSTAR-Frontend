@@ -22,6 +22,7 @@ const RegisterScreen = () => {
   const {
     control,
     handleSubmit,
+    reset,
     formState: { errors }
   } = useForm<Register>({
   })
@@ -29,9 +30,10 @@ const RegisterScreen = () => {
   const navaigation = useNavigation<any>();
 
   const onSubmit: SubmitHandler<Register> = async (user) => {
-    console.log('Submitted User:', user);
     const data = await register(user);
-    console.log('Loading:', data.data);
+    if (data && data.success) {
+      reset();
+    }
   };
 
 
@@ -136,7 +138,7 @@ const RegisterScreen = () => {
         <View style={{ paddingTop: 50 }}>
           <Button color={'black'} title='Register' onPress={handleSubmit(onSubmit)} />
         </View>
-        
+
         <Pressable onPress={() => navaigation.navigate("Login")} style={{ marginTop: 15 }}>
           <Text style={{ fontSize: 17, textAlign: 'center', color: 'gray', cursor: 'pointer' }}>Already have an acount? Sign In</Text>
         </Pressable>

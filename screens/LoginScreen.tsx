@@ -6,7 +6,7 @@ import { useForm, Controller, SubmitHandler } from 'react-hook-form'
 import { useNavigation } from '@react-navigation/native';
 import { login } from '@/api/userAPI';
 import Loader from '@/components/Loader';
-
+import Toast from "react-native-toast-message";
 const iconImage = require('@/assets/images/icon.png');
 
 // Define form data
@@ -34,6 +34,16 @@ const LoginScreen = () => {
         if (data && data.success) {
             reset();
             setIsLoading(false);
+        }else{
+            setIsLoading(false);
+            Toast.show({
+                type: "error",
+                text1: "Login Failed!",
+                text2: data.message || "Please try again after some time.",
+                position: "top",
+                visibilityTime: 3000,
+                autoHide: true,
+              });
         }
     }
 

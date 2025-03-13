@@ -1,13 +1,13 @@
 import { StyleSheet, SafeAreaView, View, Image, KeyboardAvoidingView, Text, TextInput, Button, Pressable } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form'
 import { useNavigation } from '@react-navigation/native';
 import { register } from '../api/userAPI'
-
-
+import Toast from "react-native-toast-message";
+import Loader from '@/components/Loader';
 const iconImage = require('@/assets/images/icon.png');
 
 // Define form data
@@ -26,6 +26,7 @@ const RegisterScreen = () => {
     formState: { errors }
   } = useForm<Register>({
   })
+  const [isLoading,setIsLoading] = useState(false);
 
   const navaigation = useNavigation<any>();
 
@@ -33,12 +34,24 @@ const RegisterScreen = () => {
     const data = await register(user);
     if (data && data.success) {
       reset();
+      setIsLoading(false);
+    } else {
+      setIsLoading(false);
+      Toast.show({
+        type: "error",
+        text1: "Registretion Failed!",
+        text2: data.message || "Please try again after some try.",
+        position: "top",
+        visibilityTime: 3000,
+        autoHide: true,
+      });
     }
   };
 
 
   return (
     <SafeAreaView style={styles.loginContainer} >
+      { isLoading && <Loader /> }
       <View>
         <Image style={styles.imageContainer} source={iconImage} />
       </View>

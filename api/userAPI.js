@@ -17,3 +17,21 @@ export const login = async(payload) => {
         return error
     }
 }
+
+export const addAddress = async(payload) => {
+    try {
+        const response = await api.post('/users/addAddress', payload);
+        return response.data
+    } catch (error) {
+        return error
+    }
+}
+
+export const getAddresses = async(userId) => {
+    try {
+        const response = await api.get(`/users/getAllAddresses/${userId}`);
+        return response.data
+    } catch (error) {
+        return error
+    }
+}

@@ -1,5 +1,5 @@
 import { StyleSheet, SafeAreaView, View, Image, KeyboardAvoidingView, Text, TextInput, Button, Pressable } from 'react-native'
-import React, { useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form'
@@ -7,13 +7,21 @@ import { useNavigation } from '@react-navigation/native';
 import { login } from '@/api/userAPI';
 import Loader from '@/components/Loader';
 import Toast from "react-native-toast-message";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { UserContext } from '@/context/userContext';
+import { jwtDecode } from 'jwt-decode';
 const iconImage = require('@/assets/images/icon.png');
 
 // Define form data
 interface Login {
     email: string;
     password: string;
-  }
+}
+
+interface MyJWTPayload {
+    userId: string;
+    email: string;
+}
 
 const LoginScreen = () => {
 
@@ -24,17 +32,57 @@ const LoginScreen = () => {
         formState: { errors }
     } = useForm<Login>({
     })
-    const [isLoading,setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const navigation = useNavigation<any>();
+    const { setUser } = useContext(UserContext);
 
-    const navaigation = useNavigation<any>();
+    useEffect(() => {
+        const checkLoginStatus = async () => {
+            try {
+                const token = await AsyncStorage.getItem("authToken");
+
+                if (token) {
+                    const decodedToken = jwtDecode<MyJWTPayload>(token);
+                    setUser({
+                        id: decodedToken.userId,
+                        email: decodedToken.email
+                    })
+                    navigation.replace("Main");
+                }
+            } catch (err) {
+                console.log("error message", err);
+            }
+        };
+        checkLoginStatus();
+    }, []);
 
     const onSubmit: SubmitHandler<Login> = async (user) => {
         setIsLoading(true);
         const data = await login(user);
+        debugger
         if (data && data.success) {
+            console.log(data)
+            debugger
+            const token = data.token;
+            await AsyncStorage.setItem("authToken", token);
+            const decodedToken = jwtDecode<MyJWTPayload>(token);
+            setUser({
+                id: decodedToken.userId,
+                email: decodedToken.email
+            })
+            console.log(user, ">>>>>>>>>");
             reset();
             setIsLoading(false);
-        }else{
+            navigation.replace("Main");
+            Toast.show({
+                type: "success",
+                text1: "Login Successfuly!",
+                text2: "You are Successfuly Logged into your Account.",
+                position: "top",
+                visibilityTime: 3000,
+                autoHide: true,
+            });
+        } else {
             setIsLoading(false);
             Toast.show({
                 type: "error",
@@ -43,14 +91,14 @@ const LoginScreen = () => {
                 position: "top",
                 visibilityTime: 3000,
                 autoHide: true,
-              });
+            });
         }
     }
 
 
     return (
         <SafeAreaView style={styles.loginContainer} >
-            { isLoading && <Loader /> }
+            {isLoading && <Loader />}
             <View>
                 <Image style={styles.imageContainer} source={iconImage} />
             </View>
@@ -124,7 +172,7 @@ const LoginScreen = () => {
                     <Button color={'black'} title='Login' onPress={handleSubmit(onSubmit)} />
                 </View>
 
-                <Pressable onPress={() => navaigation.navigate("Register")} style={{ marginTop: 15 }}>
+                <Pressable onPress={() => navigation.navigate("Register")} style={{ marginTop: 15 }}>
                     <Text style={{ fontSize: 17, textAlign: 'center', color: 'gray' }}>Don't have an acount? Sign Up</Text>
                 </Pressable>
             </KeyboardAvoidingView>

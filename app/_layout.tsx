@@ -3,14 +3,27 @@ import StackNavigator from "../navigation/StackNavigator";
 import Toast, { BaseToast, ToastConfig } from 'react-native-toast-message';
 import { TouchableOpacity } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { Provider } from 'react-redux'
+import { store } from '../store';
+import { UserProvider } from '../context/userContext';
 
 export default function RootLayout() {
   const toastConfig: ToastConfig = {
     error: ({ text1, text2, props }) => (
+      toastModifier(text1, text2, props, "red")
+    ),
+    success: ({ text1, text2, props }) => (
+      toastModifier(text1, text2, props, "green")
+    ),
+  };
+
+  const toastModifier = (text1: any, text2: any, props: any, color: any) => {
+    return (
       <BaseToast
         {...props}
         style={{
-          borderLeftColor: "red",
+          borderLeftColor: color,
           backgroundColor: "#fff",
           borderRadius: 8,
         }}
@@ -24,13 +37,17 @@ export default function RootLayout() {
           </TouchableOpacity>
         )}
       />
-    ),
+    )
   };
 
   return (
-    <>
-      <StackNavigator />
-      <Toast config={toastConfig} />
-    </>
+    <Provider store={store}>
+      <UserProvider>
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <StackNavigator />
+          <Toast config={toastConfig} />
+        </GestureHandlerRootView>
+      </UserProvider>
+    </Provider>
   );
 }

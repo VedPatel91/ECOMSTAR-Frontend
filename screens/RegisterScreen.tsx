@@ -26,7 +26,7 @@ const RegisterScreen = () => {
     formState: { errors }
   } = useForm<Register>({
   })
-  const [isLoading,setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const navaigation = useNavigation<any>();
 
@@ -35,11 +35,19 @@ const RegisterScreen = () => {
     if (data && data.success) {
       reset();
       setIsLoading(false);
+      Toast.show({
+        type: "success",
+        text1: "Register Successfuly!",
+        text2: "Your details are register successfuly.",
+        position: "top",
+        visibilityTime: 3000,
+        autoHide: true,
+      });
     } else {
       setIsLoading(false);
       Toast.show({
         type: "error",
-        text1: "Registretion Failed!",
+        text1: "Registration Failed!",
         text2: data.message || "Please try again after some try.",
         position: "top",
         visibilityTime: 3000,
@@ -51,7 +59,7 @@ const RegisterScreen = () => {
 
   return (
     <SafeAreaView style={styles.loginContainer} >
-      { isLoading && <Loader /> }
+      {isLoading && <Loader />}
       <View>
         <Image style={styles.imageContainer} source={iconImage} />
       </View>

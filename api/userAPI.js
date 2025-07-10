@@ -35,3 +35,12 @@ export const getAddresses = async(userId) => {
         return error
     }
 }
+
+export const placeOrder = async(payload) => {
+    try {
+        const response = await api.post(`/users/addOrder`, payload);
+        return response.data
+    } catch (error) {
+        return error
+    }
+}

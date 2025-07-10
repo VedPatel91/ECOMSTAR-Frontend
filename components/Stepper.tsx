@@ -1,4 +1,5 @@
 // Stepper.tsx
+import { MaterialIcons } from '@expo/vector-icons';
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
@@ -26,7 +27,13 @@ const Stepper: React.FC<StepperProps> = ({ currentStep, stepsToShow, totalSteps 
                                     isActive && styles.activeCircle,
                                 ]}
                             >
-                                <Text style={styles.stepText}>{step}</Text>
+                                {
+                                    isCompleted ? (
+                                        <MaterialIcons name="check" size={24} color="white" />
+                                    ) : (
+                                        <Text style={styles.stepText}>{step}</Text>
+                                    )
+                                }
                             </View>
                             {step !== totalSteps && <View style={styles.line} />}
                         </View>
